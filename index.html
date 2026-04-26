@@ -1589,7 +1589,7 @@ function downloadPDF(key) {
   if(t) t.innerHTML = html;
   if(c) c.innerHTML = html;
 })();
-function submitForm() {
+async function submitForm() {
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const email = document.getElementById('f-email').value.trim();
@@ -1599,20 +1599,45 @@ function submitForm() {
   if (!name) { alert('Please enter your full name.'); document.getElementById('f-name').focus(); return; }
   if (!phone) { alert('Please enter your phone number.'); document.getElementById('f-phone').focus(); return; }
 
-  const subject = encodeURIComponent('New Consultation Request — BuyingEase');
-  const body = encodeURIComponent(
-    'New Enquiry from BuyingEase Website\n\n' +
-    'Name: ' + name + '\n' +
-    'Phone: ' + phone + '\n' +
-    'Email: ' + (email || 'Not provided') + '\n' +
-    'Location: ' + (location || 'Not provided') + '\n\n' +
-    'Requirement:\n' + (message || 'Not provided')
-  );
-  window.open('mailto:nikhil@buyingease.com?subject=' + subject + '&body=' + body);
-  alert('Thank you, ' + name + '!\n\nA senior BuyingEase advisor will contact you at ' + phone + ' within 2 hours.\n\nYou can also reach us directly:\nWhatsApp: +91 809 012 9151\nEmail: nikhil@buyingease.com');
+  const btn = document.querySelector('#contact-form .form-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'b02fe962-63e0-4cb8-ad87-f69d28f79225',
+        subject: 'New Consultation Request — BuyingEase',
+        to: 'nikhil@buyingease.com',
+        name: name,
+        phone: phone,
+        email: email || 'Not provided',
+        location: location || 'Not provided',
+        requirement: message || 'Not provided',
+        source: 'Contact Form'
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Thank you, ' + name + '!\n\nA senior BuyingEase advisor will contact you at ' + phone + ' within 2 hours.\n\nYou can also reach us directly:\nWhatsApp: +91 809 012 9151\nEmail: nikhil@buyingease.com');
+      document.getElementById('f-name').value = '';
+      document.getElementById('f-phone').value = '';
+      document.getElementById('f-email').value = '';
+      document.getElementById('f-location').value = '';
+      document.getElementById('f-message').value = '';
+    } else {
+      alert('Something went wrong. Please call us directly at +91 809 012 9151 or email nikhil@buyingease.com');
+    }
+  } catch(e) {
+    alert('Something went wrong. Please call us directly at +91 809 012 9151 or email nikhil@buyingease.com');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Submit — Get a Call Back in 2 Hours →';
 }
 
-function submitCPForm() {
+async function submitCPForm() {
   const name = document.getElementById('cp-name').value.trim();
   const phone = document.getElementById('cp-phone').value.trim();
   const agency = document.getElementById('cp-agency').value.trim();
@@ -1624,19 +1649,46 @@ function submitCPForm() {
   if (!name) { alert('Please enter your full name.'); document.getElementById('cp-name').focus(); return; }
   if (!phone) { alert('Please enter your phone number.'); document.getElementById('cp-phone').focus(); return; }
 
-  const subject = encodeURIComponent('New Channel Partner Registration — BuyingEase');
-  const body = encodeURIComponent(
-    'New CP Registration from BuyingEase Website\n\n' +
-    'Name: ' + name + '\n' +
-    'Agency: ' + (agency || 'Not provided') + '\n' +
-    'Phone: ' + phone + '\n' +
-    'Email: ' + (email || 'Not provided') + '\n' +
-    'RERA: ' + (rera || 'Not provided') + '\n' +
-    'Cities: ' + (city || 'Not provided') + '\n\n' +
-    'Experience:\n' + (exp || 'Not provided')
-  );
-  window.open('mailto:nikhil@buyingease.com?subject=' + subject + '&body=' + body);
-  alert('Thank you for registering, ' + name + '!\n\nOur CP team will reach you at ' + phone + ' within 24 hours.\n\nWhatsApp: +91 809 012 9151');
+  const btn = document.querySelector('#cp-form .form-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'b02fe962-63e0-4cb8-ad87-f69d28f79225',
+        subject: 'New Channel Partner Registration — BuyingEase',
+        to: 'nikhil@buyingease.com',
+        name: name,
+        agency: agency || 'Not provided',
+        phone: phone,
+        email: email || 'Not provided',
+        rera: rera || 'Not provided',
+        cities: city || 'Not provided',
+        experience: exp || 'Not provided',
+        source: 'CP Registration Form'
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Thank you for registering, ' + name + '!\n\nOur CP team will reach you at ' + phone + ' within 24 hours.\n\nWhatsApp: +91 809 012 9151');
+      document.getElementById('cp-name').value = '';
+      document.getElementById('cp-agency').value = '';
+      document.getElementById('cp-phone').value = '';
+      document.getElementById('cp-email').value = '';
+      document.getElementById('cp-rera').value = '';
+      document.getElementById('cp-city').value = '';
+      document.getElementById('cp-exp').value = '';
+    } else {
+      alert('Something went wrong. Please call us directly at +91 809 012 9151 or email nikhil@buyingease.com');
+    }
+  } catch(e) {
+    alert('Something went wrong. Please call us directly at +91 809 012 9151 or email nikhil@buyingease.com');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Submit Registration →';
 }
 
 // ---- PAGE NAVIGATION ----
@@ -1720,22 +1772,54 @@ document.addEventListener('click', function(e) {
 (function(){
   if(sessionStorage.getItem('popupShown')) return;
   setTimeout(function(){
+    // Do not show popup if user is actively filling any form field
+    const activeEl = document.activeElement;
+    const isFillingForm = activeEl && (
+      activeEl.tagName === 'INPUT' ||
+      activeEl.tagName === 'TEXTAREA' ||
+      activeEl.tagName === 'SELECT'
+    );
+    if(isFillingForm) return;
+
+    // Also suppress if any form field has been touched (has a value)
+    const formFields = document.querySelectorAll('.fi, .fta, .popup-input');
+    const anyFilled = Array.from(formFields).some(f => f.value.trim() !== '');
+    if(anyFilled) return;
+
     document.getElementById('lead-popup').classList.add('show');
     sessionStorage.setItem('popupShown','1');
   }, 30000);
+
+  // If user starts filling a form, mark popup as shown so it never interrupts
+  document.addEventListener('focusin', function(e){
+    if(e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')){
+      sessionStorage.setItem('popupShown','1');
+    }
+  }, { once: true });
 })();
 function closePopup(){
   document.getElementById('lead-popup').classList.remove('show');
 }
-function submitPopup(){
+async function submitPopup(){
   var name = document.getElementById('popup-name').value.trim();
   var phone = document.getElementById('popup-phone').value.trim();
   if(!name){alert('Please enter your name.');return;}
   if(!phone){alert('Please enter your phone number.');return;}
   closePopup();
-  var subject = encodeURIComponent('New Consultation Request — BuyingEase');
-  var body = encodeURIComponent('Name: '+name+'\nPhone: '+phone+'\n\nSource: Website Popup');
-  window.open('mailto:nikhil@buyingease.com?subject='+subject+'&body='+body);
+  try {
+    await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'b02fe962-63e0-4cb8-ad87-f69d28f79225',
+        subject: 'New Consultation Request — BuyingEase',
+        to: 'nikhil@buyingease.com',
+        name: name,
+        phone: phone,
+        source: 'Website Popup'
+      })
+    });
+  } catch(e) { /* silent fail — user already sees success message */ }
   alert('Thank you '+name+'! A senior advisor will call you at '+phone+' within 2 hours.');
 }
 </script>
